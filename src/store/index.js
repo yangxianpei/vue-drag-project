@@ -5,11 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    componentsID:0,
+    componentData:[]
   },
   mutations: {
-  },
-  actions: {
-  },
-  modules: {
+    increment(state) {
+      state.componentsID++
+    },
+    addComponent(state,d){
+      console.log(d);
+      state.componentData.push(d)
+    }
   }
 })
