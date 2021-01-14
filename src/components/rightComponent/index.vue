@@ -1,5 +1,5 @@
 <template>
-    <div>right</div>
+    <div>操作台</div>
 </template>
 <script>
 export default {

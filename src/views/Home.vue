@@ -11,9 +11,10 @@
             </section>
 
             <!-- 中间组件部分 -->
-            <section class="center" id='center'>
-                <centerCom></centerCom>
-
+            <section class="center">
+                <div class="context" id='context'>
+                    <centerCom></centerCom>
+                </div>
             </section>
 
             <!-- 右侧组件部分 -->
@@ -52,6 +53,8 @@ export default {
         },
         handleDrop(e) {
             e.preventDefault();
+            e.stopPropagation();
+            if (e.target.id != "context") return;
             const component = cloneDeep(
                 componentsList[e.dataTransfer.getData("index")]
             );
@@ -59,14 +62,14 @@ export default {
             component.style.top = e.offsetY;
             component.style.left = e.offsetX;
             this.$store.commit("increment");
-              this.$store.commit("addComponent",component);
-
+            this.$store.commit("addComponent", component);
         },
         handleDragOver(e) {
             e.preventDefault();
-            if (e.target.id == "center") {
+            if (e.target.id == "context") {
                 e.dataTransfer.dropEffect = "copy";
             }
+            return;
         },
     },
     destroyed() {
@@ -86,10 +89,20 @@ export default {
     main {
         flex: 1;
         display: flex;
+        height: calc(100% - 80px);
         .center {
+            display: flex;
+            justify-content: center;
             flex: 1;
-            background: #fff;
+            background: #f5f5f5;
             margin: 10px;
+            overflow: auto;
+            .context {
+                height: 500px;
+                width: 500px;
+                background: #fff;
+                position: relative;
+            }
         }
         .left,
         .right {

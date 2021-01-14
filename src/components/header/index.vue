@@ -19,7 +19,10 @@ export default {
 .header{
     display: flex;
     align-items: center;
-    padding: 20px  10px;
+    height: 80px;
+    line-height: 80px;
     background: #fff;
+        border-bottom: 1px solid #ddd;
+     
 }
 </style>
