@@ -2,16 +2,20 @@
     <div class="edit">
         <Shape v-for="(item,index) in $store.state.componentData" :key="item.id"
             :style="getShapeStyle(item.style,index)"
-            :defaultStyle="item.style">
+            :element="item"
+            :zindex="item.zIndex"
+            :defaultStyle="item.style" :id='$store.state.componentsID'>
             <component class="component" :is="item.component" :propValue="item.propValue"
                 :style="getComponentStyle(item.style)" />
         </Shape>
+        <MakeLine/>
     </div>
 </template>
 
 <script>
 //    transform: rotate(2deg);
 import Shape from "./shape.vue";
+import MakeLine from './makeLine.vue'
 import { getStyle } from "@/utils";
 export default {
     data() {
@@ -20,6 +24,7 @@ export default {
     },
     components: {
         Shape,
+        MakeLine
     },
     methods: {
         getShapeStyle(style,index) {
@@ -42,6 +47,7 @@ export default {
         },
     },
 };
+
 </script>
 
 <style lang="less" scoped>

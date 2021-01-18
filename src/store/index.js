@@ -5,16 +5,24 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    componentsID:0,
-    componentData:[]
+    curComponent: null,
+    curComponentZindex: null,
+    componentData: []
   },
   mutations: {
-    increment(state) {
-      state.componentsID++
+    setCurComponent(state, { component, zIndex }) {
+      state.curComponent = component;
+      state.curComponentZindex = zIndex;
+      console.log(state.curComponent);
     },
-    addComponent(state,d){
-      console.log(d);
-      state.componentData.push(d)
+    modifyCurComponentStyle({ curComponent }, { left, top, width, height }) {
+      if (left) curComponent.left = left;
+      if (top) curComponent.top = top;
+      if (width) curComponent.width = width;
+      if (height) curComponent.height = height;
+    },
+    addComponent(state, component) {
+      state.componentData.push(component)
     }
   }
 })

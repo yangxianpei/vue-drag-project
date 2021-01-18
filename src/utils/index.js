@@ -17,3 +17,4 @@ function getStyle(style, filter = []) {
 export {
     getStyle
 }
+

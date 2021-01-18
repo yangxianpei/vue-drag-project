@@ -1,10 +1,12 @@
 <template>
     <div class="shape" @mousedown="handleMouseDown" ref="target">
-        <div class="shape-point" :style="getPointStyle(item)" v-for="item in pointList" :key="item" v-show="isshowPoint"></div>
+        <div class="shape-point" :style="getPointStyle(item)" v-for="item in pointList" :key="item"
+            v-show="isshowPoint"></div>
         <slot></slot>
     </div>
 </template>
 <script>
+import eventBus from "@/utils/eventBus.js";
 export default {
     props: {
         defaultStyle: {
@@ -12,40 +14,52 @@ export default {
             type: Object,
             default: {},
         },
+        element: {
+            require: true,
+            type: Object,
+            default: {},
+        },
+        zindex: {
+            require: true,
+            type: Number,
+        },
     },
     data() {
         return {
             pointList: ["t", "r", "b", "l", "lt", "rt", "lb", "rb"],
-             directionKey: { // 光标显示样式
-                t: 'n',
-                b: 's',
-                l: 'w',
-                r: 'e',
+            directionKey: {
+                // 光标显示样式
+                t: "n",
+                b: "s",
+                l: "w",
+                r: "e",
             },
-            isshowPoint:false
+            isshowPoint: false,
         };
     },
     mounted() {
-        document.addEventListener('click',this.handleSwift)
+        document.addEventListener("click", this.handleSwift);
     },
-    beforeDestroy(){
-        document.removeEventListener('click',this.handleSwift)
+    beforeDestroy() {
+        document.removeEventListener("click", this.handleSwift);
     },
     methods: {
-        handleSwift(e){
-            if(this.$refs.target.contains(e.target)){
-                this.isshowPoint=true
-            }else{
-                 this.isshowPoint=false
+        handleSwift(e) {
+            if (this.$refs.target.contains(e.target)) {
+                this.isshowPoint = true;
+            } else {
+                this.isshowPoint = false;
             }
         },
         handleMouseDown(e) {
-            /**
-             * 只有上帝能懂
-             */
-            this.isshowPoint=true
+            e.stopPropagation();
+            this.isshowPoint = true;
             let pos = this.defaultStyle;
             const target = this.$refs.target;
+            this.$store.commit("setCurComponent", {
+                component: this.element,
+                zIndex: this.zindex,
+            });
             let {
                 width: targetW,
                 height: targetH,
@@ -81,12 +95,27 @@ export default {
                 if (currentY > editH - targetH + editT + pointPosY) {
                     resT = editH - targetH;
                 }
+
                 pos.left = resL;
                 pos.top = resT;
+                //修改当前组件组件样式
+                this.$store.commit("modifyCurComponentStyle", pos);
+                //用来监听 辅助线距离
+                //currentY-startY>0 true 表示向下, 反之向上
+                //currentX-startX>0 true 表示向左,反之向右
+                this.$nextTick(() => {
+                    eventBus.$emit(
+                        "move",
+                        currentY - startY > 0,
+                        currentX - startX > 0
+                    );
+                });
             };
             let up = (e) => {
                 document.removeEventListener("mousemove", move);
                 document.removeEventListener("mouseup", up);
+                //隐藏线
+                eventBus.$emit("unmove");
             };
             document.addEventListener("mousemove", move);
             document.addEventListener("mouseup", up);
@@ -103,25 +132,30 @@ export default {
                 //四个角
                 newLeft = LeftSide ? 0 : width;
                 newTop = TopSide ? 0 : height;
-            }else{
-                if(TopSide || ButtonSide){
+            } else {
+                if (TopSide || ButtonSide) {
                     //上下两点
-                    newLeft=width/2;
-                    newTop=TopSide?0:height
+                    newLeft = width / 2;
+                    newTop = TopSide ? 0 : height;
                 }
-                if(LeftSide||RightSide){
+                if (LeftSide || RightSide) {
                     //左右两点
-                    newLeft=LeftSide?0:width ;
-                    newTop=height/2
+                    newLeft = LeftSide ? 0 : width;
+                    newTop = height / 2;
                 }
             }
-            let cursor =point.split('').reverse().map(m => this.directionKey[m]).join('') + '-resize'
+            let cursor =
+                point
+                    .split("")
+                    .reverse()
+                    .map((m) => this.directionKey[m])
+                    .join("") + "-resize";
             const style = {
                 marginLeft: RightSide ? "-4px" : "-3px",
                 marginTop: "-3px",
                 left: `${newLeft}px`,
                 top: `${newTop}px`,
-                cursor
+                cursor,
             };
             return style;
         },

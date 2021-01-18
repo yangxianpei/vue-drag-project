@@ -33,6 +33,7 @@ import rightCom from "@/components/rightComponent";
 import centerCom from "@/components/centerComponent";
 import { cloneDeep } from "loadsh";
 import componentsList from "@/packages/component-list";
+import generateID from '@/utils/generateID';
 export default {
     name: "Home",
     components: {
@@ -58,10 +59,9 @@ export default {
             const component = cloneDeep(
                 componentsList[e.dataTransfer.getData("index")]
             );
-            component.id = this.$store.state.componentsID;
+            component.id = generateID();
             component.style.top = e.offsetY;
             component.style.left = e.offsetX;
-            this.$store.commit("increment");
             this.$store.commit("addComponent", component);
         },
         handleDragOver(e) {
@@ -98,8 +98,8 @@ export default {
             margin: 10px;
             overflow: auto;
             .context {
-                height: 500px;
-                width: 500px;
+                height: 800px;
+                width: 1000px;
                 background: #fff;
                 position: relative;
             }
