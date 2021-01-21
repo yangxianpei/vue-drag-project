@@ -12,7 +12,7 @@ const list = [
         propValue: '按钮',
         icon: 'el-icon-thumb',
         animations: [],
-        events: {},
+        events: [],
         style: {
             width: 100,
             height: 34,

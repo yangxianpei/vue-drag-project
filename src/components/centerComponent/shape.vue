@@ -1,12 +1,14 @@
 <template>
     <div class="shape" @mousedown="handleMouseDown" ref="target">
-        <div class="shape-point" :style="getPointStyle(item)" v-for="item in pointList" :key="item"
-            v-show="isshowPoint"></div>
+        <div class="shape-point" :style="getPointStyle(item)" v-for="item in pointList" :key="item" v-show="isshowPoint"
+            @mousedown="handleMouseDownOnPoint($event,item)"></div>
         <slot></slot>
     </div>
 </template>
 <script>
 import eventBus from "@/utils/eventBus.js";
+import {mapState} from 'vuex'
+import runAnimation from '@/utils/runAnimation.js'
 export default {
     props: {
         defaultStyle: {
@@ -37,8 +39,18 @@ export default {
             isshowPoint: false,
         };
     },
+    computed:{
+        ...mapState(['curComponent'])
+    },
     mounted() {
         document.addEventListener("click", this.handleSwift);
+        this.defaulyWidth = this.defaultStyle.width; //拖动时不能小于默认宽和高
+        this.defaulyHeight = this.defaultStyle.height;
+        eventBus.$on('runAnimation',()=>{
+            if(this.element == this.curComponent){
+                  runAnimation(this.$el, this.curComponent.animations);
+            }
+        })
     },
     beforeDestroy() {
         document.removeEventListener("click", this.handleSwift);
@@ -54,7 +66,7 @@ export default {
         handleMouseDown(e) {
             e.stopPropagation();
             this.isshowPoint = true;
-            let pos = this.defaultStyle;
+            let pos = { ...this.defaultStyle }; //子改父属性不好
             const target = this.$refs.target;
             this.$store.commit("setCurComponent", {
                 component: this.element,
@@ -69,7 +81,7 @@ export default {
                 width: editW,
                 left: editL,
                 top: editT,
-            } = document.getElementById("context").getBoundingClientRect();
+            } = document.getElementById("edit").getBoundingClientRect();
             const startX = e.clientX;
             const startY = e.clientY;
             const startLeft = parseInt(pos.left);
@@ -158,6 +170,44 @@ export default {
                 cursor,
             };
             return style;
+        },
+        handleMouseDownOnPoint(e, point) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const pos = { ...this.defaultStyle };
+            const height = parseInt(pos.height);
+            const width = parseInt(pos.width);
+
+            const top = parseInt(pos.top);
+            const left = parseInt(pos.left);
+            const startX = e.clientX;
+            const startY = e.clientY;
+            let move = (e) => {
+                let curX = e.clientX;
+                let curY = e.clientY;
+                let disx = curX - startX;
+                let disy = curY - startY;
+                const hasT = /t/.test(point);
+                const hasB = /b/.test(point);
+                const hasL = /l/.test(point);
+                const hasR = /r/.test(point);
+                //"t", "r", "b", "l", "lt", "rt", "lb", "rb"
+                const newHeight = height + (hasT ? -disy : hasB ? disy : 0);
+                const newWidth = width + (hasL ? -disx : hasR ? disx : 0);
+                pos.height = newHeight > this.defaulyHeight ? newHeight : this.defaulyHeight;
+                pos.width = newWidth > this.defaulyWidth ? newWidth : this.defaulyWidth;
+                pos.left = left + (hasL ? disx : 0);
+                pos.top = top + (hasT ? disy : 0);
+                this.$store.commit("modifyCurComponentStyle", pos);
+            };
+
+            let up = (e) => {
+                document.removeEventListener("mousemove", move);
+                document.removeEventListener("mouseup", up);
+            };
+            document.addEventListener("mousemove", move);
+            document.addEventListener("mouseup", up);
         },
     },
 };

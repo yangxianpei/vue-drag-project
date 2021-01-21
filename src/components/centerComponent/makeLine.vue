@@ -43,9 +43,9 @@ export default {
             const { top, height, left, width } = dragComponentInfo;
             dragComponentInfo.bottom = top + height;
             dragComponentInfo.right = left + width; 
+            this.hideLine();
             components.forEach((component) => {
                 if (component == this.curComponent) {
-                      console.log(component.id,this.curComponent.id);
                       return
                 };
                 const { top, left, height, width } = component.style;
@@ -145,11 +145,10 @@ export default {
         },
         hideLine() {
             Object.keys(this.lineStatus).forEach((key) => {
-                this.lineStatus[key] = false;
+                 this.lineStatus[key]=false
             });
         },
         drawLine(needToShow, isDownward, isRightward) {
-            console.log(needToShow);
             Object.keys(this.lineStatus).forEach((key)=>{
                 if(needToShow.includes(key)){
                     this.lineStatus[key]=true;
@@ -172,6 +171,7 @@ export default {
     position: absolute;
     z-index: 1000;
     border: 1px dashed #59c7f9;
+    opacity: 0.5;
 }
 .yline {
     height: 100%;
@@ -179,5 +179,6 @@ export default {
     position: absolute;
     z-index: 1000;
     border: 1px dashed #59c7f9;
+    opacity: 0.5;
 }
 </style>

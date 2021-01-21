@@ -6,8 +6,31 @@
 
 body{
     height: 100vh;
-    background: #ffffff;;
+    background: gray;;
 }
 #app{
    height: 100%; 
+}
+.el-tabs__nav-scroll {
+    padding-left: 20px;
+}
+.el-tabs{
+     height: 100%;
+     z-index: 1;
+}
+.el-tabs__content {
+     height: calc(100% - 80px);
+    overflow: auto;
+}
+
+.el-drawer {
+    .el-drawer__header {
+        span {
+            outline: none;
+            text-align: center;
+        }
+        margin: 0;
+        margin-bottom: 10px;
+        padding: 0;
+    }
 }

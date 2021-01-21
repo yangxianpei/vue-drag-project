@@ -11,7 +11,7 @@
             </section>
 
             <!-- 中间组件部分 -->
-            <section class="center">
+            <section class="center" id='center' ref="center">
                 <div class="context" id='context'>
                     <centerCom></centerCom>
                 </div>
@@ -33,7 +33,7 @@ import rightCom from "@/components/rightComponent";
 import centerCom from "@/components/centerComponent";
 import { cloneDeep } from "loadsh";
 import componentsList from "@/packages/component-list";
-import generateID from '@/utils/generateID';
+import generateID from "@/utils/generateID";
 export default {
     name: "Home",
     components: {
@@ -55,7 +55,8 @@ export default {
         handleDrop(e) {
             e.preventDefault();
             e.stopPropagation();
-            if (e.target.id != "context") return;
+            const center = this.$refs.center;
+            if (!center.contains(e.target)) return;
             const component = cloneDeep(
                 componentsList[e.dataTransfer.getData("index")]
             );
@@ -90,25 +91,28 @@ export default {
         flex: 1;
         display: flex;
         height: calc(100% - 80px);
+        justify-content: space-between;
+        overflow: hidden;
         .center {
-            display: flex;
-            justify-content: center;
-            flex: 1;
-            background: #f5f5f5;
-            margin: 10px;
-            overflow: auto;
+            // display: flex;
+            // justify-content: center;
+            max-width: 70%;
+            background: #dfe6e9;
+            padding: 30px;
+
             .context {
-                height: 800px;
-                width: 1000px;
-                background: #fff;
+                height: 100%;
+                overflow: auto;
+                background: #ffffff;
                 position: relative;
             }
         }
         .left,
         .right {
             height: 100%;
-            width: 200px;
-            background: #fff;
+            width: 30%;
+            max-width: 260px;
+            background: #ffffff;
         }
     }
 }
