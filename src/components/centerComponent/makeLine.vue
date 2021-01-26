@@ -42,12 +42,12 @@ export default {
             const dragEleHalfheight = dragComponentInfo.height / 2;
             const { top, height, left, width } = dragComponentInfo;
             dragComponentInfo.bottom = top + height;
-            dragComponentInfo.right = left + width; 
+            dragComponentInfo.right = left + width;
             this.hideLine();
             components.forEach((component) => {
                 if (component == this.curComponent) {
-                      return
-                };
+                    return;
+                }
                 const { top, left, height, width } = component.style;
                 const bottom = top + height;
                 const right = left + width;
@@ -145,17 +145,17 @@ export default {
         },
         hideLine() {
             Object.keys(this.lineStatus).forEach((key) => {
-                 this.lineStatus[key]=false
+                this.lineStatus[key] = false;
             });
         },
         drawLine(needToShow, isDownward, isRightward) {
-            Object.keys(this.lineStatus).forEach((key)=>{
-                if(needToShow.includes(key)){
-                    this.lineStatus[key]=true;
-                }else{
-                     this.lineStatus[key]=false;
+            Object.keys(this.lineStatus).forEach((key) => {
+                if (needToShow.includes(key)) {
+                    this.lineStatus[key] = true;
+                } else {
+                    this.lineStatus[key] = false;
                 }
-            })
+            });
         },
         isNearly(dragValue, targetValue) {
             return Math.abs(dragValue - targetValue) <= this.diff;

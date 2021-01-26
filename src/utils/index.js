@@ -16,7 +16,15 @@ function getStyle(style, filter = []) {
     return result
 }
 
+ function swap(arr, i, j) {
+    const temp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = temp
+    console.log(arr);
+}
+
 export {
-    getStyle
+    getStyle,
+    swap
 }
 

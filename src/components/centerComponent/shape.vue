@@ -1,5 +1,6 @@
 <template>
-    <div class="shape" @mousedown="handleMouseDown" ref="target">
+    <div class="shape" @mousedown="handleMouseDown" ref="target" @contextmenu.prevent="rightClick"
+        :class="{ active: this.active }">
         <div class="shape-point" :style="getPointStyle(item)" v-for="item in pointList" :key="item" v-show="isshowPoint"
             @mousedown="handleMouseDownOnPoint($event,item)"></div>
         <slot></slot>
@@ -7,10 +8,14 @@
 </template>
 <script>
 import eventBus from "@/utils/eventBus.js";
-import {mapState} from 'vuex'
-import runAnimation from '@/utils/runAnimation.js'
+import { mapState } from "vuex";
+import runAnimation from "@/utils/runAnimation.js";
 export default {
     props: {
+        active: {
+            type: Boolean,
+            default: false,
+        },
         defaultStyle: {
             require: true,
             type: Object,
@@ -39,23 +44,36 @@ export default {
             isshowPoint: false,
         };
     },
-    computed:{
-        ...mapState(['curComponent'])
+    computed: {
+        ...mapState(["curComponent"]),
     },
     mounted() {
         document.addEventListener("click", this.handleSwift);
         this.defaulyWidth = this.defaultStyle.width; //拖动时不能小于默认宽和高
         this.defaulyHeight = this.defaultStyle.height;
-        eventBus.$on('runAnimation',()=>{
-            if(this.element == this.curComponent){
-                  runAnimation(this.$el, this.curComponent.animations);
+        eventBus.$on("runAnimation", () => {
+            if (this.element == this.curComponent) {
+                runAnimation(this.$el, this.curComponent.animations);
             }
-        })
+        });
     },
     beforeDestroy() {
         document.removeEventListener("click", this.handleSwift);
     },
     methods: {
+        rightClick(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            let target = e.target;
+            let left = e.offsetX;
+            let top = e.offsetY;
+            while (!target.className.includes("edit")) {
+                left += target.offsetLeft;
+                top += target.offsetTop;
+                target = target.parentNode;
+            }
+            this.$store.commit("showContexeMenu", { left, top });
+        },
         handleSwift(e) {
             if (this.$refs.target.contains(e.target)) {
                 this.isshowPoint = true;
@@ -174,7 +192,6 @@ export default {
         handleMouseDownOnPoint(e, point) {
             e.stopPropagation();
             e.preventDefault();
-
             const pos = { ...this.defaultStyle };
             const height = parseInt(pos.height);
             const width = parseInt(pos.width);
@@ -195,8 +212,13 @@ export default {
                 //"t", "r", "b", "l", "lt", "rt", "lb", "rb"
                 const newHeight = height + (hasT ? -disy : hasB ? disy : 0);
                 const newWidth = width + (hasL ? -disx : hasR ? disx : 0);
-                pos.height = newHeight > this.defaulyHeight ? newHeight : this.defaulyHeight;
-                pos.width = newWidth > this.defaulyWidth ? newWidth : this.defaulyWidth;
+
+                pos.height =
+                    newHeight > this.defaulyHeight
+                        ? newHeight
+                        : this.defaulyHeight;
+                pos.width =
+                    newWidth > this.defaulyWidth ? newWidth : this.defaulyWidth;
                 pos.left = left + (hasL ? disx : 0);
                 pos.top = top + (hasT ? disy : 0);
                 this.$store.commit("modifyCurComponentStyle", pos);
@@ -217,6 +239,11 @@ export default {
 .shape {
     position: absolute;
     display: inline-block;
+    z-index: 99;
+    height: 100%;
+}
+.active {
+    outline: 1px solid #70c0ff;
 }
 .shape-point {
     position: absolute;
@@ -225,5 +252,6 @@ export default {
     height: 5px;
     border: 1px solid #59c7f9;
     border-radius: 50%;
+    z-index: 100;
 }
 </style>
