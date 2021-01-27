@@ -2,31 +2,32 @@
     <div class="bg" ref="bg" v-if="show">
         <el-button @click="close">关闭</el-button>
         <div class="canvas" :style="{width:canvasSize.width+'px',height:canvasSize.height+'px'}">
-            <template v-for="(item,index) in componentData">
+            <!-- <template v-for="(item,index) in componentData">
                 <component class="component" :key="index" :is="item.component" :propValue="item.propValue"
                     :style="getStyle(item.style)"></component>
-            </template>
+            </template> -->
+            <WrapComponent v-for="(item,index) in componentData" :key="index" :config='item'></WrapComponent>
         </div>
     </div>
 </template>
 <script>
-import { getStyle } from "@/utils";
+
 import { mapState } from "vuex";
 
+import WrapComponent from './wrapComponent'
 export default {
+    components:{
+        WrapComponent
+    },
     model: {
         prop: "show",
         event: "changed",
     },
-    mounted() {},
+
     computed: {
         ...mapState(["componentData", "canvasSize"]),
     },
-    data() {
-        return {
-            getStyle,
-        };
-    },
+
     props: {
         show: {
             type: Boolean,
@@ -61,9 +62,7 @@ export default {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        .component {
-            position: absolute;
-        }
+       
     }
 }
 </style>

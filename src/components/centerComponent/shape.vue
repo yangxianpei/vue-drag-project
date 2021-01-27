@@ -53,7 +53,7 @@ export default {
         this.defaulyHeight = this.defaultStyle.height;
         eventBus.$on("runAnimation", () => {
             if (this.element == this.curComponent) {
-                runAnimation(this.$el, this.curComponent.animations);
+                runAnimation(this.$el, this.curComponent.animations,0);
             }
         });
     },

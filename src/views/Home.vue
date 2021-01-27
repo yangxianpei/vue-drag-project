@@ -42,36 +42,36 @@ export default {
         rightCom,
         centerCom,
     },
-    data(){
+    data() {
         return {
-            componentsList
-        }
+            componentsList,
+        };
     },
     mounted() {
         document.addEventListener("dragover", this.handleDragOver);
         document.addEventListener("dragend", this.handleDragend);
         document.addEventListener("drop", this.handleDrop);
     },
-    created(){
-        let componentData =localStorage.getItem('componentData')
-        let canvasSize =localStorage.getItem('canvasSize')
-        if(componentData){
-           componentData= this.addID(JSON.parse(componentData));
-            this.$store.commit('setCurComponentData',componentData)
+    created() {
+        let componentData = localStorage.getItem("componentData");
+        let canvasSize = localStorage.getItem("canvasSize");
+        if (componentData) {
+            componentData = this.addID(JSON.parse(componentData));
+            this.$store.commit("setCurComponentData", componentData);
         }
-         if(canvasSize){
-            this.$store.commit('setCanvasSize',JSON.parse(canvasSize))
+        if (canvasSize) {
+            this.$store.commit("setCanvasSize", JSON.parse(canvasSize));
         }
     },
     methods: {
-        center(){
-            this.$store.commit('hideMenu')
+        center() {
+            this.$store.commit("hideMenu");
         },
-        addID(componentData){
-            componentData.forEach(item => {
-                item.id=generateID()
+        addID(componentData) {
+            componentData.forEach((item) => {
+                item.id = generateID();
             });
-            return componentData
+            return componentData;
         },
         handleDragend(e) {
             e.preventDefault();
@@ -88,7 +88,6 @@ export default {
             component.id = generateID();
             component.style.top = e.offsetY;
             component.style.left = e.offsetX;
-            console.log(componentsList);
             this.$store.commit("addComponent", component);
         },
         handleDragOver(e) {

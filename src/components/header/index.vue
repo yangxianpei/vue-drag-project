@@ -63,6 +63,7 @@ export default {
         },
         clear() {
             this.$store.commit("clearComponentData", []);
+            localStorage.clear('component')
         },
     },
 };

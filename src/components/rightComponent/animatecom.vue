@@ -2,13 +2,6 @@
     <div class="animate">
         <el-button @click="add">添加动画</el-button>
         <el-button @click="prelook">预览动画</el-button>
-        <!-- <el-drawer
-        title="我是标题"
-        :visible.sync="addAnimate"
-        :with-header="false"
-         :direction="'ltr'">
-             <span>我来啦!</span>
-        </el-drawer> -->
         <Modal v-model="addAnimate">
             <el-tabs v-model="tabsValue">
                 <el-tab-pane :label="item.label" :name="item.label" v-for="(item,index) in animationData" :key="index">

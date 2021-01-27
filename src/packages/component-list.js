@@ -1,5 +1,5 @@
 //公共样式
-const commonStyle={
+const commonStyle = {
     rotate: '',
     opacity: 1,
 };
@@ -34,7 +34,7 @@ const list = [
         propValue: '输入框',
         icon: 'el-icon-search',
         animations: [],
-        events: {},
+        events: [],
         style: {
             width: 200,
             height: 40,
@@ -52,7 +52,7 @@ const list = [
         propValue: '文字',
         icon: 'el-icon-edit',
         animations: [],
-        events: {},
+        events: [],
         style: {
             width: 200,
             height: 33,
@@ -63,11 +63,30 @@ const list = [
             textAlign: '',
             color: '',
         },
+
     },
+    {
+        component: 'v-img',
+        label: '图片',
+        propValue: '图片',
+        icon: 'el-icon-picture-outline',
+        animations: [],
+        events: [],
+        style: {
+            width: 200,
+            height: 100,
+            fontSize: 14,
+            fontWeight: 500,
+            lineHeight: '',
+            letterSpacing: 0,
+            textAlign: '',
+            color: '',
+        }
+    }
 ]
 
-list.forEach(item=>{
-    item.style = { ...item.style, ...commonStyle}
+list.forEach(item => {
+    item.style = { ...item.style, ...commonStyle }
 })
 
 export default list
