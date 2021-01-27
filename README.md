@@ -1,19 +1,4 @@
 # drapdemo
+可视化拖拽组件库 DEMO
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+* [在线预览](https://yangxianpei.github.io/vue-drag-project/)
